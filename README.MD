@@ -34,6 +34,7 @@
 - [Bootstrap - Buttons inside List Group Item](http://stackoverflow.com/questions/38373842/bootstrap-buttons-inside-list-group-item) 
 - [Animate.css](https://daneden.github.io/animate.css/)
 - [Holder.js](http://holderjs.com/)
+- [Font Awesome](http://fontawesome.io/)
 - [Spring验证的错误返回------BindingResult](http://zyjustin9.iteye.com/blog/2002606)
 - [Hibernate Validation各注解的用法](http://tcrct.iteye.com/blog/1329823)
 - [正则表达式](https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)

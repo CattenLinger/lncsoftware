@@ -7,16 +7,9 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css">
     <link href="/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="/css/lncsa_main.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
     <script src="/js/tools.js"></script>
-    <style>
-        body {
-            margin-top: 30px;
-        }
-
-        .lnc_title_panel{
-            font-size: 17pt;
-        }
-    </style>
 </head>
 <body>
     <#nested>

@@ -9,6 +9,8 @@
 
     <context:annotation-config/>
 
+    <mvc:default-servlet-handler />
+
     <context:component-scan base-package="cn.lncsa.controller"/>
 
     <mvc:resources mapping="/css/**" location="/css/"/>

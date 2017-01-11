@@ -67,7 +67,6 @@ public class ArticleServices{
         return articleDAO.findOne(articleId);
     }
 
-    
     public Page<Article> get(Pageable pageable, String... status) {
         return articleDAO.findAll(status,pageable);
     }
@@ -94,6 +93,10 @@ public class ArticleServices{
 
     public Page<Article> getByUser(User user, Pageable pageable){
         return articleDAO.findAll((root, query, cb) -> cb.equal(root.get("author"),user), pageable);
+    }
+
+    public Integer userArticleCount(User user, String... status){
+        return articleDAO.countUserArticle(user,status);
     }
 
     public Page<Article> findBetweenDate(Date startDate, Date endDate, Pageable pageable, String... status) {

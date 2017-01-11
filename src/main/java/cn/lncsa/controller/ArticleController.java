@@ -8,6 +8,7 @@ import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -45,11 +46,25 @@ public class ArticleController {
         this.topicServices = topicServices;
     }
 
+    /*
+    *
+    * Control methods
+    *
+    * */
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String articles(@RequestParam(value = "page",defaultValue = "0") int page, Model model){
         model.addAttribute("articles",articleServices.get(new PageRequest(page,5, Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED));
         model.addAttribute("topics",topicServices.mostWeightTopics(10));
         return "articles";
+    }
+
+    @RequestMapping(value = "/public/all",method = RequestMethod.GET)
+    public @ResponseBody Page<Article> publicArticles(
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "pageSize",defaultValue = "10") int pageSize
+    ){
+        return articleServices.get(new PageRequest(page,pageSize,Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED);
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)

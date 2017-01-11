@@ -1,8 +1,11 @@
 package cn.lncsa.controller;
 
+import cn.lncsa.data.model.Article;
+import cn.lncsa.data.model.Topic;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.model.UserProfile;
 import cn.lncsa.services.ArticleServices;
+import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ public class UserController {
 
     private UserServices userServices;
     private ArticleServices articleServices;
+    private TopicServices topicServices;
 
     @Autowired
     private void setUserServices(UserServices userServices) {
@@ -34,6 +38,11 @@ public class UserController {
     @Autowired
     private void setArticleServices(ArticleServices articleServices) {
         this.articleServices = articleServices;
+    }
+
+    @Autowired
+    private void setTopicServices(TopicServices topicServices){
+        this.topicServices = topicServices;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -87,6 +96,8 @@ public class UserController {
         model.addAttribute("user_model",user);
         model.addAttribute("user_info",userServices.getProfile(user,true));
         model.addAttribute("user_latest_articles",articleServices.getByUser(user,new PageRequest(0,5, Sort.Direction.DESC, "createDate")).getContent());
+        model.addAttribute("user_article_count",articleServices.userArticleCount(user,
+                Article.STATUS_PUBLISHED,Article.STATUS_AUDITING,Article.STATUS_BANNED,Article.STATUS_SUBMITTED,Article.STATUS_PRIVATE));
         return "userCenter";
     }
 

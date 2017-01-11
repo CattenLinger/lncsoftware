@@ -2,6 +2,8 @@ package cn.lncsa.services;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.Topic;
+import cn.lncsa.data.model.User;
+import cn.lncsa.data.repository.IArticleDAO;
 import cn.lncsa.data.repository.ITopicDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,10 +27,18 @@ import java.util.List;
 public class TopicServices{
 
     private ITopicDAO topicDAO;
+    private IArticleDAO articleDAO;
+
+
 
     @Autowired
     private void setTopicDAO(ITopicDAO topicDAO){
         this.topicDAO = topicDAO;
+    }
+
+    @Autowired
+    private void setArticleDAO(IArticleDAO articleDAO) {
+        this.articleDAO = articleDAO;
     }
 
     public Topic save(Topic topic) {
@@ -41,6 +51,14 @@ public class TopicServices{
 
     public List<Topic> mostWeightTopics(Integer count){
         return topicDAO.findAll(new PageRequest(0,count, Sort.Direction.DESC, "weight")).getContent();
+    }
+
+    public Page<Topic> getUserCreatedTopic(User user, Pageable pageable){
+        return topicDAO.findAll((root, query, cb) -> cb.equal(root.get("creator"),user),pageable);
+    }
+
+    public Page<Topic> getUserJoinTopic(User user, Pageable pageable){
+        return topicDAO.findAll((root, query, cb) -> cb.equal(root.join("article").get("author"),user),pageable);
     }
 
     public void delete(Integer tagId) {

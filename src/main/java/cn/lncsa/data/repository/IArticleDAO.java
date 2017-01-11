@@ -2,6 +2,7 @@ package cn.lncsa.data.repository;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.Topic;
+import cn.lncsa.data.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,6 @@ public interface IArticleDAO extends IBaseDAO<Article>{
     @Query("select a from Article a join a.topics t where t in ?1 and a.status in ?2")
     Page<Article> findByTopic(Topic topic,String[] status,Pageable pageable);
 
+    @Query("select count(a.id) from Article a join a.author au where au = ?1 and a.status in ?2")
+    Integer countUserArticle(User user, String[] status);
 }

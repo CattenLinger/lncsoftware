@@ -1,5 +1,6 @@
 package cn.lncsa.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -12,6 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "topics")
+@JsonIgnoreProperties({"creator"})
 public class Topic implements IBaseModel<Integer> {
 
     private Integer id;

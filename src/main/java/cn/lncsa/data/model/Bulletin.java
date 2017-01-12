@@ -97,7 +97,7 @@ public class Bulletin implements IBaseModel<Integer> {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy-MM-dd HH:mm:ss")
     public Date getPeriodOfValidity() {
         return periodOfValidity;
     }

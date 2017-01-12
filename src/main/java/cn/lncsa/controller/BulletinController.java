@@ -60,13 +60,15 @@ public class BulletinController {
     }
 
     @RequestMapping(value = "/write", method = RequestMethod.POST)
-    public String write(@ModelAttribute Bulletin bulletin,@RequestParam("periodOfValidity") String periodOfValidity, Model model, HttpSession session){
+    public String write(@ModelAttribute Bulletin bulletin, Model model, HttpSession session){
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
         if(sessionUserBean == null) return "redirect:/user/login";
 
         User user = userServices.get(sessionUserBean.getUserId());
         bulletin.setAuthor(user);
         bulletin.setCreateDate(new Date());
+
+        //if(periodOfValidity != null) bulletin.setPeriodOfValidity(periodOfValidity);
         bulletinServices.save(bulletin);
 
         model.addAttribute("bulletin",bulletin);

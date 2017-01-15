@@ -92,3 +92,33 @@
     </div>
 </div>
 </#macro>
+
+<#macro commitItem commitModel>
+<div class="panel panel-success">
+    <div class="panel-body">
+        <div class="media">
+            <a href="#" class="media-left"> <img src="holder.js/48x48"></a>
+            <div class="media-body">
+                <h3 class="media-heading">
+                    Username
+                </h3>
+                <p>Commit at yyyy-MM-dd HH:mm:ss</p>
+                <p>Foooooooooooooo content and something other</p>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="pull-left">
+            <div class="btn-group btn-group-sm">
+                <a href="#" class="btn btn-default">Reply</a>
+                <a href="#" class="btn btn-default">Quote</a>
+                <a href="#" class="btn btn-default">...</a>
+            </div>
+        </div>
+        <div class="pull-right">
+            <h6>#1</h6>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+</#macro>

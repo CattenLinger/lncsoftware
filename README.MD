@@ -12,6 +12,12 @@
 
 好了，在 target 文件夹里面就有 war 包了，自己拿到心仪的 servlet 容器里跑起来就好了。
 
+或者这样，直接在 jetty 上面跑起来
+
+    mvn jetty:run
+
+这样就能直接在 8080 端口上访问了
+
 对了别忘记查看 applicationContext.xml 里面有关数据库的配置，配置好链接并创建好数据库。
 不需要建表的， Hibernate 会帮你弄好这些琐碎事 ˊ_>ˋ
 

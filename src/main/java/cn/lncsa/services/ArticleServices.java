@@ -11,10 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.*;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +66,7 @@ public class ArticleServices{
     }
 
     public Page<Article> get(Pageable pageable, String... status) {
-        return articleDAO.findAll(status,pageable);
+        return articleDAO.findAll((root, criteriaQuery, criteriaBuilder) -> root.get("status").in(status), pageable);
     }
 
     public List<Article> getLatest(Integer count) {
@@ -77,13 +75,9 @@ public class ArticleServices{
     }
 
     public Page<Article> getByTopic(Topic topic, Pageable pageable, String... status) {
-        return articleDAO.findByTopic(topic,status,pageable);
-//        return articleDAO.findAll(new Specification<Article>() {
-//            @Override
-//            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                return cb.and(root.get("status").in((Object) status)),root.);
-//            }
-//        }, pageable);
+        return articleDAO.findAll(
+                (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.and(root.join("topics").in(topic),root.get("status").in(status)),
+                pageable);
     }
 
     public Page<Article> getByUser(User user, Pageable pageable, String... status) {
@@ -94,8 +88,8 @@ public class ArticleServices{
         return articleDAO.findAll((root, query, cb) -> cb.equal(root.get("author"),user), pageable);
     }
 
-    public Integer userArticleCount(User user, String... status){
-        return articleDAO.countUserArticle(user,status);
+    public long userArticleCount(User user, String... status){
+        return articleDAO.count((root,cq,cb) -> cb.and(cb.equal(root.get("author"),user),root.get("status").in(status)));
     }
 
     public Page<Article> findBetweenDate(Date startDate, Date endDate, Pageable pageable, String... status) {

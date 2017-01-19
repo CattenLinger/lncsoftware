@@ -1,12 +1,12 @@
 package cn.lncsa.controller;
 
 import cn.lncsa.data.model.Article;
-import cn.lncsa.data.model.Topic;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.model.UserProfile;
 import cn.lncsa.services.ArticleServices;
 import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
+import cn.lncsa.view.CommonDialogFactory;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -71,11 +71,11 @@ public class UserController {
     public String login(@ModelAttribute @Valid User userForm, BindingResult result, Model model, HttpSession session) {
 
         User user = userServices.getByName(userForm.getName());
-        if(result.hasErrors()) return "dialogs/loginFailed";
-        if (user == null || !user.getPassword().equals(userForm.getPassword())) return "dialogs/loginFailed";
+
+        if (result.hasErrors() || user == null || !user.getPassword().equals(userForm.getPassword()))
+            return "dialogs/loginFailed";
 
         model.addAttribute("login_username", user.getName());
-
         session.setAttribute("session_user",new SessionUserBean(user));
 
         return "dialogs/loginSuccess";

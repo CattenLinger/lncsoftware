@@ -2,10 +2,13 @@ package cn.lncsa.controller;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.ArticleBody;
+import cn.lncsa.data.model.Commit;
 import cn.lncsa.data.model.Topic;
 import cn.lncsa.services.ArticleServices;
+import cn.lncsa.services.CommitServices;
 import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
+import cn.lncsa.view.ArticleCommitDTO;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,7 @@ public class ArticleController {
     private ArticleServices articleServices;
     private UserServices userServices;
     private TopicServices topicServices;
+    private CommitServices commitServices;
 
     @Autowired
     private void setArticleServices(ArticleServices articleServices) {
@@ -44,6 +48,11 @@ public class ArticleController {
     @Autowired
     private void setTopicServices(TopicServices topicServices) {
         this.topicServices = topicServices;
+    }
+
+    @Autowired
+    private void setCommitServices(CommitServices commitServices){
+        this.commitServices = commitServices;
     }
 
     /*
@@ -68,7 +77,10 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public String article(@PathVariable("id") Integer id, Model model){
+    public String article(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "commit_page",defaultValue = "0") int commitPage,
+            Model model) {
         Article article = articleServices.get(id);
         if(article == null || article.getId() == null) return "dialogs/articleNotFound";
 
@@ -76,6 +88,10 @@ public class ArticleController {
         model.addAttribute("author",article.getAuthor().getName());
         model.addAttribute("modifiedDate",article.getBody().getLatestModifiedDate());
         model.addAttribute("content",article.getBody().getContent());
+
+        Page<Commit> commits = commitServices.getCommitList(id,new PageRequest(commitPage,10, Sort.Direction.DESC,"date"));
+        model.addAttribute("commitPage",commits);
+        model.addAttribute("commitList", ArticleCommitDTO.convert(commits.getContent()));
 
         return "article";
     }

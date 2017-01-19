@@ -94,29 +94,30 @@
 </#macro>
 
 <#macro commitItem commitModel>
-<div class="panel panel-success">
-    <div class="panel-body">
-        <div class="media">
-            <a href="#" class="media-left"> <img src="holder.js/48x48"></a>
-            <div class="media-body">
-                <h3 class="media-heading">
-                    Username
-                </h3>
-                <p>Commit at yyyy-MM-dd HH:mm:ss</p>
-                <p>Foooooooooooooo content and something other</p>
-            </div>
-        </div>
-    </div>
-    <div class="panel-footer">
-        <div class="pull-left">
-            <div class="btn-group btn-group-sm">
-                <a href="#" class="btn btn-default">Reply</a>
-                <a href="#" class="btn btn-default">Quote</a>
-                <a href="#" class="btn btn-default">...</a>
-            </div>
+<div class="list-group-item">
+    <div class="media">
+        <a href="/user/${commitModel.userId!""}" class="media-left"> <img src="${commitModel.headPic!"holder.js/48x48"}" onload="DrawImage(this,48,48)"></a>
+        <div class="media-body">
+            <h3 class="media-heading">${commitModel.shownName}</h3>
+            <p>at ${commitModel.createDate}
+                <#if (commitModel.replyTo??)>
+                    , reply to <a href="/commit/${commitModel.replyTo!""}">
+                    <#if (commitModel.replyToContent?size > 10)>
+                                ${commitModel.replyToContent?html?replace("\n"," ")?substring(0,9)}
+                            <#else >
+                    ${commitModel.replyToContent?html?replace("\n"," ")}
+                    </#if>
+                </a>
+                </#if>
+            </p>
+            <p data-role="commit-content">${commitModel.content?html?replace("\n","<br>")}</p>
         </div>
         <div class="pull-right">
-            <h6>#1</h6>
+            <div class="btn-group btn-group-sm">
+                <a href="#" class="btn btn-success">Reply</a>
+                <a href="#" class="btn btn-success">Quote</a>
+                <a href="#" class="btn btn-success">...</a>
+            </div>
         </div>
         <div class="clearfix"></div>
     </div>

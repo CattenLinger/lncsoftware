@@ -15,12 +15,12 @@ public class ArticleCommitDTO {
     private Integer id = null;
 
     private String shownName = null;
+    private Integer userId = null;
     private String headPic = null;
     private Date createDate = null;
     private String content = null;
 
     private Integer replyTo = null;
-    private Integer replyToUser = null;
     private String replyToContent = null;
 
     public ArticleCommitDTO() {
@@ -33,18 +33,21 @@ public class ArticleCommitDTO {
         if(user != null){
             this.shownName = user.getShownName();
             this.headPic = user.getHeadPic();
+            this.userId = user.getId();
         }
+
+        this.createDate = commit.getDate();
+        this.content = commit.getContents();
 
         Commit replyCommit = commit.getReplyTo();
         if(replyCommit != null){
             this.replyTo = replyCommit.getId();
-            this.replyToUser = replyCommit.getUser().getId();
             this.replyToContent = replyCommit.getContents();
         }
     }
 
-    public List<ArticleCommitDTO> convert(List<Commit> commits){
-        return commits.stream().map(ArticleCommitDTO::new).collect(Collectors.toList());
+    public static List<ArticleCommitDTO> convert(List<Commit> commits){
+        return commits.parallelStream().map(ArticleCommitDTO::new).collect(Collectors.toList());
     }
 
     public Integer getId() {
@@ -95,19 +98,19 @@ public class ArticleCommitDTO {
         this.replyTo = replyTo;
     }
 
-    public Integer getReplyToUser() {
-        return replyToUser;
-    }
-
-    public void setReplyToUser(Integer replyToUser) {
-        this.replyToUser = replyToUser;
-    }
-
     public String getReplyToContent() {
         return replyToContent;
     }
 
     public void setReplyToContent(String replyToContent) {
         this.replyToContent = replyToContent;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

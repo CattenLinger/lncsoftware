@@ -3,6 +3,7 @@ package cn.lncsa.data.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -21,6 +22,17 @@ public class Commit implements IBaseModel<Integer> {
     private Commit replyTo;
 
     private User user;
+
+    public Commit(){
+
+    }
+
+    public Commit(String contents, Article targetArticle, User user) {
+        this.contents = contents;
+        this.targetArticle = targetArticle;
+        this.user = user;
+        this.setDate(new Date());
+    }
 
     /*
     * Getter and setter

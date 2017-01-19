@@ -1,4 +1,5 @@
 <#import "template/mainTemp.ftl" as template>
+<#import "template/articleTemp.ftl" as articleTemp>
 <@template.body title="Article">
 <div class="container">
     <div class="page-header">
@@ -26,30 +27,18 @@
         <hr>
         <div class="row">
             <div class="col-sm-8">
-                <div class="panel panel-success">
-                    <div class="panel-body">
-                        <div class="media">
-                            <a href="#" class="media-left"> <img src="holder.js/48x48"></a>
-                            <div class="media-body">
-                                <h3 class="media-heading">
-                                    Username
-                                </h3>
-                                <p>Commit at yyyy-MM-dd HH:mm:ss, reply to <a href="#">#id</a></p>
-                                <p>Foooooooooooooo content and something other</p>
-                            </div>
-                        </div>
+                <#if (!commitList?? || commitList?size == 0)>
+                    <div class="page-header">
+                        <h1 align="center">No Commit yet...</h1>
                     </div>
-                    <div class="panel-footer">
-                        <div class="pull-left">
-                            <div class="btn-group btn-group-sm">
-                                <a href="#" class="btn btn-default">Reply</a>
-                                <a href="#" class="btn btn-default">Quote</a>
-                                <a href="#" class="btn btn-default">...</a>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
+                <#else >
+                    <div class="list-group">
+                    <#list commitList as commit>
+                        <@articleTemp.commitItem commitModel=commit/>
+                    </#list>
                     </div>
-                </div>
+                    <@template.defaultPager total=commitPage.totalPages current=commitPage.number length=10 path="?commitPage=" />
+                </#if>
             </div>
             <div class="col-sm-4">
                 <div class="panel panel-success">
@@ -57,12 +46,14 @@
                         <h4>Create a commit</h4>
                     </div>
                     <div class="panel-body">
-                        <form method="post" action="">
+                        <form method="post" action="/commit/create" id="commit-form">
+                            <input type="hidden" name="replyToId" value="">
+                            <input type="hidden" name="targetArticleId" value="${article.id}">
                             <div class="form-group">
                                 <textarea class="form-control" rows="5" name="content"></textarea>
                             </div>
                             <div class="form-group">
-                                <div class="col-xs-4 col-xs-offset-4">
+                                <div class="col-lg-4 col-lg-offset-4">
                                     <input type="submit" class="btn btn-success btn-block" value="Submit">
                                 </div>
                             </div>

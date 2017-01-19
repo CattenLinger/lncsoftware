@@ -288,8 +288,8 @@
                     <webApp>
                         <compactPath>/</compactPath>
                     </webApp>
-                    <stopKey/>
-                    <stopPort/>
+                    <stopKey>stop</stopKey>
+                    <stopPort>8089</stopPort>
                 </configuration>
             </plugin>
         </plugins>

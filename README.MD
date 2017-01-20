@@ -32,6 +32,7 @@
     - Freemarker
 - 前端技术
     - Bootstrap
+    - jQuery
     - AngularJS (相关代码目前未合并到开发主线内)
 
 ##IV. 参考资料
@@ -42,6 +43,7 @@
     - [Animate.css](https://daneden.github.io/animate.css/)
     - [Holder.js](http://holderjs.com/)
     - [Font Awesome](http://fontawesome.io/)
+    - [Marked](https://github.com/chjj/marked)
 - 后端
     - Spring Data 与 Hibernate 相关
         - [Spring验证的错误返回------BindingResult](http://zyjustin9.iteye.com/blog/2002606)
@@ -69,6 +71,7 @@
 - Spring
 - Hibernate
 - Bootstrap
+- jQuery
 - AngularJS
 - Linux Mint
 - Apple

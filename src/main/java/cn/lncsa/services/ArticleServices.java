@@ -71,7 +71,7 @@ public class ArticleServices{
 
     public List<Article> getLatest(Integer count) {
         return articleDAO.findAll((root, query, cb) -> cb.equal(root.<String>get("status"),Article.STATUS_PUBLISHED),
-                new PageRequest(0,count, Sort.Direction.DESC,"status")).getContent();
+                new PageRequest(0,count, Sort.Direction.DESC,"createDate")).getContent();
     }
 
     public Page<Article> getByTopic(Topic topic, Pageable pageable, String... status) {

@@ -26,7 +26,6 @@
     <hr>
     <div>
         <h3>Commit</h3>
-        <hr>
         <div class="row">
             <div class="col-sm-8">
                 <#if (!commitList?? || commitList?size == 0)>

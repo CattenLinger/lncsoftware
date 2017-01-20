@@ -1,4 +1,10 @@
 <#setting datetime_format="yyyy-MM-dd HH:mm">
+
+<#-- Mian page body
+    qoute any page use this macro.
+
+    title : page title that shown on the browser's tab
+-->
 <#macro body title>
 <html>
 <head>
@@ -19,10 +25,16 @@
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="/js/bootstrap-toggle.min.js"></script>
 <script src="/js/holder.min.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>
 </#macro>
 
+<#-- Homepage navgation bar
+    an navigation bar below the title at homepage
+
+    activeOrder : which button activated
+-->
 <#macro mainNav activeOrder>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -52,6 +64,15 @@
 </nav>
 </#macro>
 
+<#-- Common pager
+    a pager that use in many places
+
+    total : total page
+    current : current page
+    length : how much page shown at a time
+    path : link perfix of pager's buttons
+
+-->
 <#macro defaultPager total current length path>
 <div class="container-fluid">
     <nav style="text-align: center">
@@ -112,6 +133,14 @@
     </#list>
 </#macro>
 
+<#-- Dialog template
+    show a dialog, remember quote it with Mainpage Body
+
+    mainTitle : big title
+    subtitle : the subtitle
+
+    nested content : buttons
+-->
 <#macro dialog mainTitle subtitle>
 <div class="container">
     <div class="page-header">
@@ -126,4 +155,33 @@
         </div>
     </div>
 </div>
+</#macro>
+
+<#-- Keep text length in a range ( for inline text )
+
+    text : text for keep in range
+    length : range
+    suffix : if the text is too long, what suffix for show.
+
+-->
+<#macro cutInlineStringInSize text length suffix>
+    <#if (text?length > length)>
+    ${text?html?replace("\n"," ")?substring(0,length - 1)}${suffix!""}
+    <#else >
+    ${text?html?replace("\n"," ")}
+    </#if>
+</#macro>
+
+<#-- Keep text length in a range ( for non-inline text)
+
+    text : text for keep in range
+    length : range
+    suffix : if the text is too long, what suffix for show.
+-->
+<#macro cutStringInSize text size suffix>
+    <#if (text?size > size)>
+    ${text?html?replace("\n","<br>")?substring(0,size - 1)}${suffix!""}
+    <#else >
+    ${text?html?replace("\n","<br>")}
+    </#if>
 </#macro>

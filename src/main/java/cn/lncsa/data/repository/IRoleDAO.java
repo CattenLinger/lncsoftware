@@ -7,12 +7,4 @@ import cn.lncsa.data.model.Role;
  */
 public interface IRoleDAO extends IBaseDAO<Role> {
 
-    /**
-     *
-     * Get role by role's name
-     *
-     * @param name
-     * @return
-     */
-    Role getByName(String name);
 }

@@ -32,7 +32,7 @@
                         <h1 align="center">No Commit yet...</h1>
                     </div>
                 <#else >
-                    <div class="list-group">
+                    <div class="list-group" data-role="commit-bodies">
                     <#list commitList as commit>
                         <@articleTemp.commitItem commitModel=commit/>
                     </#list>
@@ -46,11 +46,16 @@
                         <h4>Create a commit</h4>
                     </div>
                     <div class="panel-body">
-                        <form method="post" action="/commit/create" id="commit-form">
-                            <input type="hidden" name="replyToId" value="">
+                        <form method="post" action="/commit/create" data-role="commit-form">
+                            <div class="alert alert-success" data-role="announce" style="display: none;">
+                                <button type="button" class="close" data-role="cancel" onclick="$commitForm.cancelReply()">
+                                    <span>&times;</span>
+                                </button><span data-role="announce-text">Reply To :</span>
+                            </div>
+                            <input type="hidden" data-role="reply-target" name="replyToId" value="">
                             <input type="hidden" name="targetArticleId" value="${article.id}">
                             <div class="form-group">
-                                <textarea class="form-control" rows="5" name="content"></textarea>
+                                <textarea data-role="content" class="form-control" rows="5" name="content"></textarea>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-4 col-lg-offset-4">
@@ -65,3 +70,8 @@
     </div>
 </div>
 </@template.body>
+<script>
+    $(document).ready(function () {
+        commitList();
+    });
+</script>

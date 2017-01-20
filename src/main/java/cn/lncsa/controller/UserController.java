@@ -6,7 +6,6 @@ import cn.lncsa.data.model.UserProfile;
 import cn.lncsa.services.ArticleServices;
 import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
-import cn.lncsa.view.CommonDialogFactory;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

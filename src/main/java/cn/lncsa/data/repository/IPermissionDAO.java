@@ -10,13 +10,4 @@ import java.util.List;
  */
 public interface IPermissionDAO extends IBaseDAO<Permission> {
 
-    /**
-     *
-     * Get permission by title
-     *
-     * @param title
-     * @return
-     */
-    @Query("select p from Permission p where p.title = ?1")
-    List<Permission> getByTitle(String title);
 }

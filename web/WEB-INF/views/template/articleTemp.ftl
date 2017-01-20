@@ -1,3 +1,4 @@
+<#import "mainTemp.ftl" as main>
 <#macro articleListItem item imglink>
 <a class="list-group-item" href="/article/${item.id}">
     <div class="media">
@@ -94,30 +95,28 @@
 </#macro>
 
 <#macro commitItem commitModel>
-<div class="list-group-item">
+<div class="list-group-item" data-id="${commitModel.id}">
     <div class="media">
         <a href="/user/${commitModel.userId!""}" class="media-left"> <img src="${commitModel.headPic!"holder.js/48x48"}" onload="DrawImage(this,48,48)"></a>
         <div class="media-body">
-            <h3 class="media-heading">${commitModel.shownName}</h3>
+            <h3 class="media-heading" data-role="commit-user">${commitModel.shownName}</h3>
             <p>at ${commitModel.createDate}
                 <#if (commitModel.replyTo??)>
-                    , reply to <a href="/commit/${commitModel.replyTo!""}">
-                    <#if (commitModel.replyToContent?size > 10)>
-                                ${commitModel.replyToContent?html?replace("\n"," ")?substring(0,9)}
-                            <#else >
-                    ${commitModel.replyToContent?html?replace("\n"," ")}
-                    </#if>
-                </a>
+                    , reply to <a href="/commit/${commitModel.replyTo!""}"><@main.cutInlineStringInSize text=commitModel.replyToContent length=20 suffix="..."/></a>
                 </#if>
             </p>
-            <p data-role="commit-content">${commitModel.content?html?replace("\n","<br>")}</p>
+            <p data-role="content">${commitModel.content?html?replace("\n","<br>")}</p>
         </div>
-        <div class="pull-right">
+        <div class="btn-toolbar pull-right">
             <div class="btn-group btn-group-sm">
-                <a href="#" class="btn btn-success">Reply</a>
-                <a href="#" class="btn btn-success">Quote</a>
-                <a href="#" class="btn btn-success">...</a>
+                <button class="btn btn-success" data-role="button-reply">Reply</button>
+                <button class="btn btn-success" data-role="button-quote">Quote</button>
             </div>
+            <#if (Session.session_user?? && Session.session_user.userId == commitModel.userId)>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-danger" data-role="button-delete">Delete</button>
+            </div>
+            </#if>
         </div>
         <div class="clearfix"></div>
     </div>

@@ -23,9 +23,12 @@
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
 <script src="/js/bootstrap-toggle.min.js"></script>
 <script src="/js/holder.min.js"></script>
 <script src="/js/main.js"></script>
+<#--<script src="/js/micromarkdown.min.js"></script>-->
+<script src="/js/marked.js"></script>
 </body>
 </html>
 </#macro>

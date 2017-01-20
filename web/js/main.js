@@ -27,6 +27,25 @@
 *                   button-reply : Set value of "reply-target" as data-id
 *                   button-quote : Set value of "reply-target" as data-id and copy content to from's content;
 *                   button-delete : Execute delete action.
+*
+* APIs :
+*   After the commit from generated, a "$commitForm" object will export to window
+*
+*   $commitForm :
+*       announce :
+*           show() : Show the announce banner
+*           hide() : Hide the announce banner
+*           setText(text) : Set text on the announce banner
+*
+*        setReplyTarget(id) : Set replyToId param
+*        clearReplyTarget() : Clear the param
+*
+*        content:
+*           set(text) : change the content
+*           get() : get text in the content
+*
+*        cancelReply() : Do things that cancel reply status
+*
 * */
 function commitList(){
     var commitFormNodes = $(document).find("[data-role='commit-form']:first").find("[data-role]");
@@ -34,7 +53,7 @@ function commitList(){
         console.error("commit-form not found! will not create the commit list.");
         return;
     }
-    console.debug("Commit Form found. " + commitFormNodes.length + " components.");
+    //console.debug("Commit Form found. " + commitFormNodes.length + " components.");
     var commitForm = {};
     $(commitFormNodes).each(function (index, element) {
         var announceText;
@@ -94,7 +113,7 @@ function commitList(){
     window.$commitForm = commitForm;
 
     var commitBodyNodes = $(document).find("[data-role='commit-bodies']").children("[data-id]");
-    console.debug("There are " + commitBodyNodes.length + " commits.");
+    // console.debug("There are " + commitBodyNodes.length + " commits.");
     //Iterating each commit, prepare functions for each buttons.
     var commit_body = [];
     $(commitBodyNodes).each(function (index, element) {
@@ -115,6 +134,7 @@ function commitList(){
             switch ($(element).attr("data-role")){
                 case "content":
                     commitItem.content = $(element).text();
+                    $(element).html(marked(commitItem.content));
                     break;
                 case "commit-user":
                     commitItem.username = $(element).text();
@@ -124,42 +144,43 @@ function commitList(){
             }
         });
 
-        console.debug("The " + (commitItem.index + 1) + " commit body.");
-        console.debug("Commit id : " + commitItem.id);
-        console.debug("Username : " + commitItem.username);
-        console.debug(commitItem.content);
-
-        console.debug("Buttons :");
+        // console.debug("The " + (commitItem.index + 1) + " commit body.");
+        // console.debug("Commit id : " + commitItem.id);
+        // console.debug("Username : " + commitItem.username);
+        // console.debug(commitItem.content);
+        //
+        // console.debug("Buttons :");
         //Add functions on each buttons
         $(element).find("[data-role|='button']").each(function (index, element) {
 
             switch ($(element).attr("data-role")){
 
                 case "button-reply":
-                    console.debug( "\t\t\t" + index + " : Reply Button.");
+                    // console.debug( "\t\t\t" + index + " : Reply Button.");
                     $(element).click(function () {
                         commitForm.setReplyTarget(commitItem.id);
                         commitForm.announce.setText("Reply To : " + commitItem.username);
                         commitForm.announce.show();
 
-                        console.debug("Reply operate");
+                        // console.debug("Reply operate");
                     });
                     break;
 
                 case "button-quote":
-                    console.debug( "\t\t\t" + index + " : Quote Button.");
+                    // console.debug( "\t\t\t" + index + " : Quote Button.");
                     $(element).click(function () {
                         commitForm.setReplyTarget(commitItem.id);
                         commitForm.announce.setText("Reply To : " + commitItem.username);
-                        commitForm.content.set("> " + commitItem.cutContent(20) + "\n\n");
+                        commitForm.content.set(">" + commitItem.cutContent(20) + "\n\n");
                         commitForm.announce.show();
 
-                        console.debug("Quote operate;");
+                        // console.debug("Quote operate;");
                     });
                     break;
                 case "button-delete":
-                    console.debug( "\t\t\t" + index + " : Delete Button.");
+                    // console.debug( "\t\t\t" + index + " : Delete Button.");
                     $(element).click(function () {
+                        alert("Waiting for implement >_< ");
                         console.debug("Delete operate");
                     });
                     break;

@@ -105,7 +105,8 @@
                     , reply to <a href="/commit/${commitModel.replyTo!""}"><@main.cutInlineStringInSize text=commitModel.replyToContent length=20 suffix="..."/></a>
                 </#if>
             </p>
-            <p data-role="content">${commitModel.content?html?replace("\n","<br>")}</p>
+            <#--<p data-role="content">${commitModel.content?html?replace("\n","<br>")}</p>-->
+            <p data-role="content">${commitModel.content}</p>
         </div>
         <div class="btn-toolbar pull-right">
             <div class="btn-group btn-group-sm">

@@ -8,19 +8,21 @@
         </h1>
     </div>
     <@template.mainNav activeOrder=1/>
-    <div class="page-header">
-        <h2>${article.title}</h2>
-        <p>Author : ${author!""}, wrote at ${article.createDate!""}<#if modifiedDate??> , latest modified
-            at ${modifiedDate!""} </#if></p>
-        <#if (article.topics?? && article.topics?size > 0)>
-            <p>Topics :
-                <#list article.topics as topic>
-                    <label class="label label-info">${topic.title}</label>
-                </#list>
-            </p>
-        </#if>
+    <div data-role="article-body">
+        <div class="page-header">
+            <h2>${article.title}</h2>
+            <p>Author : ${author!""}, wrote at ${article.createDate!""}<#if modifiedDate??> , latest modified
+                at ${modifiedDate!""} </#if></p>
+            <#if (article.topics?? && article.topics?size > 0)>
+                <p>Topics :
+                    <#list article.topics as topic>
+                        <label class="label label-info">${topic.title}</label>
+                    </#list>
+                </p>
+            </#if>
+        </div>
+        <p data-role="content">${content?string}</p>
     </div>
-    <section>${content?html?replace("\n","<br>")}</section>
     <hr>
     <div>
         <h3>Commit</h3>
@@ -37,7 +39,7 @@
                         <@articleTemp.commitItem commitModel=commit/>
                     </#list>
                     </div>
-                    <@template.defaultPager total=commitPage.totalPages current=commitPage.number length=10 path="?commitPage=" />
+                    <@template.defaultPager total=commitPage.totalPages current=commitPage.number length=10 path="?commit_page=" />
                 </#if>
             </div>
             <div class="col-sm-4">
@@ -55,7 +57,7 @@
                             <input type="hidden" data-role="reply-target" name="replyToId" value="">
                             <input type="hidden" name="targetArticleId" value="${article.id}">
                             <div class="form-group">
-                                <textarea data-role="content" class="form-control" rows="5" name="content"></textarea>
+                                <textarea data-role="content" class="form-control" rows="10" name="content"></textarea>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-4 col-lg-offset-4">
@@ -73,5 +75,8 @@
 <script>
     $(document).ready(function () {
         commitList();
+
+        var articleContentNode = $("[data-role='article-body']").find("[data-role='content']");
+        $(articleContentNode).html(marked(articleContentNode.html()));
     });
 </script>

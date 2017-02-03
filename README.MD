@@ -44,6 +44,7 @@
     - [Holder.js](http://holderjs.com/)
     - [Font Awesome](http://fontawesome.io/)
     - [Marked](https://github.com/chjj/marked)
+    - [AngularJS ui-router (nested routes)](https://www.codeproject.com/articles/842880/angularjs-ui-router-nested-routes)
 - 后端
     - Spring Data 与 Hibernate 相关
         - [Spring验证的错误返回------BindingResult](http://zyjustin9.iteye.com/blog/2002606)
@@ -57,11 +58,14 @@
         - [FreeMarker 中对空字符串"" 和 null 的判断](http://www.liuqianfei.com/article/87f8317eb7ee4d3f80cd41e64d4e6240)
 - 通用
     - [正则表达式](https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)
+    - [给Nginx配置一个自签名的SSL证书](http://www.liaoxuefeng.com/article/0014189023237367e8d42829de24b6eaf893ca47df4fb5e000)
 - 以及一只懒猫
 
 ##V. 唠叨话
 
-强烈谴责腾讯云域名转移时把我域名卡在新网然后不承认我已经备案了的域名 (╯‵□′)╯︵┻━┻
+(╯‵□′)╯︵┻━┻ 腾讯云域名转移时把我域名卡在新网然后不承认我已经备案了的域名 
+
+垃圾且毫无意义的中国网站服务器备案审查制度让我只好走 HTTPS 了（没钱只好弄个自签的证书（。_。
 
 ##VI. Powered By
 

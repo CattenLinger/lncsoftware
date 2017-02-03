@@ -26,5 +26,21 @@
             </div>
         </div>
     </div>
+<@templates.alertDialog id="alertDialog"/>
 </@templates.body>
-<script>$("#carousel_banner").carousel(0);</script>
+<script>
+    $("#carousel_banner").carousel(0);
+
+    var alertDialog = makeDialogModel(document.getElementById("alertDialog"));
+    $("[data-role='logoutButton']").click(function () {
+        $.get("/user/logout",function (data) {
+            alertDialog.setTitle("Logout");
+            alertDialog.setContent("Logout success");
+            $(alertDialog.positiveButton).click(function () {
+                alertDialog.hide();
+                window.location.reload();
+            });
+            alertDialog.show();
+        });
+    });
+</script>

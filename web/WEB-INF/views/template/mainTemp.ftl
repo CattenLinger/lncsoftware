@@ -23,11 +23,10 @@
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
 <script src="/js/bootstrap-toggle.min.js"></script>
 <script src="/js/holder.min.js"></script>
+<script src="/js/md5.js"></script>
 <script src="/js/main.js"></script>
-<#--<script src="/js/micromarkdown.min.js"></script>-->
 <script src="/js/marked.js"></script>
 </body>
 </html>
@@ -55,7 +54,7 @@
                     <#else >
                         ${Session.session_user.username}
                     </#if></a></li>
-                <li><a href="/user/logout">Logout</a></li>
+                <li><a data-role="logoutButton">Logout</a></li>
             </ul>
         <#else>
             <ul class="nav navbar-nav navbar-right">
@@ -187,4 +186,22 @@
     <#else >
     ${text?html?replace("\n","<br>")}
     </#if>
+</#macro>
+
+<#macro alertDialog id >
+<div class="modal fade" tabindex="-1" role="dialog" id="${id}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" data-role="dialog-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p data-role="dialog-content"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-role="dialog-positive" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 </#macro>

@@ -10,11 +10,13 @@ import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -67,17 +69,19 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@ModelAttribute @Valid User userForm, BindingResult result, Model model, HttpSession session) {
+    public Model login(@ModelAttribute @Valid User userForm, BindingResult result, Model model, HttpSession session) {
 
         User user = userServices.getByName(userForm.getName());
 
-        if (result.hasErrors() || user == null || !user.getPassword().equals(userForm.getPassword()))
-            return "dialogs/loginFailed";
+        if (result.hasErrors() || user == null || !user.getPassword().equals(userForm.getPassword())) {
+            model.addAttribute("result",false);
+            return model;
+        }
 
-        model.addAttribute("login_username", user.getName());
+        model.addAttribute("result",true);
         session.setAttribute("session_user",new SessionUserBean(user));
 
-        return "dialogs/loginSuccess";
+        return model;
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)

@@ -17,20 +17,13 @@ import javax.persistence.criteria.Root;
  * Created by cattenlinger on 2017/1/16.
  */
 @Service
-public class CommitServices {
+public class CommitServices extends BaseServices<Commit>{
     private ICommitDAO commitDAO;
 
     @Autowired
     private void setCommitDAO(ICommitDAO commitDAO) {
         this.commitDAO = commitDAO;
-    }
-
-    public void save(Commit commit) {
-        commitDAO.save(commit);
-    }
-
-    public Commit get(Integer commitId) {
-        return commitDAO.getOne(commitId);
+        setRepository(commitDAO);
     }
 
     public Page<Commit> getCommitList(Integer articleId, Pageable pageable) {

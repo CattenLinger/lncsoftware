@@ -85,9 +85,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpSession session) {
+    public Model logout(Model model,HttpSession session) {
         session.removeAttribute("session_user");
-        return "dialogs/logoutSuccess";
+        model.addAttribute("result",true);
+        return model;
     }
 
     @RequestMapping("/self")

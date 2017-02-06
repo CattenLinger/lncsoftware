@@ -20,7 +20,7 @@ import java.util.List;
  * Created by catten on 12/31/16.
  */
 @Service
-public class UserServices{
+public class UserServices extends BaseServices<User>{
 
     private IUserDAO userDAO;
     private IUserProfileDAO userProfileDAO;
@@ -28,6 +28,7 @@ public class UserServices{
     @Autowired
     private void setUserDAO(IUserDAO userDAO){
         this.userDAO = userDAO;
+        setRepository(userDAO);
     }
 
     @Autowired
@@ -35,22 +36,9 @@ public class UserServices{
         this.userProfileDAO = userProfileDAO;
     }
 
-    public User save(User user) {
-        return userDAO.save(user);
-    }
-
     public UserProfile saveProfile(UserProfile userProfile){
         return userProfileDAO.save(userProfile);
     }
-    
-    public void delete(Integer userId) {
-
-    }
-
-    public User get(Integer userId) {
-        return userDAO.findOne(userId);
-    }
-
     
     public User getByName(String username) {
         return userDAO.getByName(username);
@@ -75,10 +63,6 @@ public class UserServices{
         else return userProfile.getSecret() ? null : userProfile;
     }
 
-    public Page<UserProfile> getProfile(List<Integer> userId, boolean ignoreSecret, Pageable pageable) {
-        return null;
-    }
-
     public UserProfile saveProfile(Integer userId, UserProfile userProfile) {
         User user = userDAO.findOne(userId);
         if(userProfile.getSecret() == null) userProfile.setSecret(false);
@@ -94,9 +78,5 @@ public class UserServices{
         if(user.getProfile().getId().equals(userProfile.getId()))
         userProfileDAO.save(userProfile);
         return userProfile;
-    }
-
-    public boolean checkPassword(String username, String password) {
-        return false;
     }
 }

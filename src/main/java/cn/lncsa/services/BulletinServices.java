@@ -16,25 +16,14 @@ import java.util.List;
  * Created by cattenlinger on 2017/1/1.
  */
 @Service
-public class BulletinServices {
+public class BulletinServices extends BaseServices<Bulletin>{
 
     private IBulletinDAO bulletinDAO;
 
     @Autowired
     private void setBulletinDAO(IBulletinDAO bulletinDAO) {
         this.bulletinDAO = bulletinDAO;
-    }
-
-    public void save(Bulletin bulletin) {
-        bulletinDAO.save(bulletin);
-    }
-
-    public void delete(Integer bulletinId) {
-
-    }
-
-    public Bulletin get(Integer bulletinId) {
-        return bulletinDAO.getOne(bulletinId);
+        setRepository(bulletinDAO);
     }
 
     public Page<Bulletin> get(String type, Pageable pageable) {

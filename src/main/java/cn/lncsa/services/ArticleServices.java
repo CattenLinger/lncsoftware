@@ -6,6 +6,7 @@ import cn.lncsa.data.model.Topic;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.repository.IArticleBodyDAO;
 import cn.lncsa.data.repository.IArticleDAO;
+import cn.lncsa.data.repository.IBaseDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by catten on 12/31/16.
  */
 @Service
-public class ArticleServices{
+public class ArticleServices extends BaseServices<Article>{
 
     private IArticleDAO articleDAO;
     private IArticleBodyDAO articleBodyDAO;
@@ -28,6 +29,7 @@ public class ArticleServices{
     @Autowired
     private void setArticleDAO(IArticleDAO articleDAO){
         this.articleDAO = articleDAO;
+        setRepository(articleDAO);
     }
 
     @Autowired
@@ -50,63 +52,33 @@ public class ArticleServices{
         articleDAO.save(article);
     }
 
-    
+
     public void saveBody(ArticleBody articleBody) {
         articleBodyDAO.save(articleBody);
     }
 
-    
-    public void delete(Integer articleId) {
-
-    }
-
-    
-    public Article get(Integer articleId) {
-        return articleDAO.findOne(articleId);
-    }
-
     public Page<Article> get(Pageable pageable, String... status) {
-        return articleDAO.findAll((root, criteriaQuery, criteriaBuilder) -> root.get("status").in(status), pageable);
+        return findAll((root, criteriaQuery, criteriaBuilder) -> root.get("status").in(status), pageable);
     }
 
     public List<Article> getLatest(Integer count) {
-        return articleDAO.findAll((root, query, cb) -> cb.equal(root.<String>get("status"),Article.STATUS_PUBLISHED),
+        return findAll((root, query, cb) -> cb.equal(root.<String>get("status"),Article.STATUS_PUBLISHED),
                 new PageRequest(0,count, Sort.Direction.DESC,"createDate")).getContent();
     }
 
     public Page<Article> getByTopic(Topic topic, Pageable pageable, String... status) {
-        return articleDAO.findAll(
-                (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.and(root.join("topics").in(topic),root.get("status").in(status)),
+        return findAll((root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.and(
+                        root.join("topics").in(topic),
+                        root.get("status").in(status)),
                 pageable);
     }
 
-    public Page<Article> getByUser(User user, Pageable pageable, String... status) {
-        return null;
-    }
-
     public Page<Article> getByUser(User user, Pageable pageable){
-        return articleDAO.findAll((root, query, cb) -> cb.equal(root.get("author"),user), pageable);
+        return findAll((root, query, cb) -> cb.equal(root.get("author"),user), pageable);
     }
 
     public long userArticleCount(User user, String... status){
-        return articleDAO.count((root,cq,cb) -> cb.and(cb.equal(root.get("author"),user),root.get("status").in(status)));
-    }
-
-    public Page<Article> findBetweenDate(Date startDate, Date endDate, Pageable pageable, String... status) {
-        return null;
-    }
-
-    public Page<Article> findBetweenModifiedDate(Date startDate, Date endDate, Pageable pageable, String... status) {
-        return null;
-    }
-
-    
-    public Page<Article> findByKeyword(String keyword, Pageable pageable, String... status) {
-        return null;
-    }
-
-    
-    public ArticleBody getBody(Integer articleId) {
-        return null;
+        return repository.count((root,cq,cb) -> cb.and(cb.equal(root.get("author"),user),root.get("status").in(status)));
     }
 }

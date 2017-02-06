@@ -66,7 +66,7 @@ public class TopicController {
         return topicServices.mostWeightTopics(count);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     public Model createTopic(@ModelAttribute Topic topic, Model model, HttpSession session){
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
         if(sessionUserBean == null){

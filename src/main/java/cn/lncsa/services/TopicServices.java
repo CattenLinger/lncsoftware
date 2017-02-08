@@ -55,7 +55,7 @@ public class TopicServices extends BaseServices<Topic> {
         return topicDAO.findAll(topicIds);
     }
 
-    public Page<Topic> getAll(Pageable pageable) {
+    public Page<Topic> get(Pageable pageable) {
         return topicDAO.findAll(pageable);
     }
 }

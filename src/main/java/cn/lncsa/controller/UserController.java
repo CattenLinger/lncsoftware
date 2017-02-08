@@ -46,28 +46,48 @@ public class UserController {
         this.topicServices = topicServices;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String register() {
-        return "register";
-    }
 
+    /**
+     *
+     * Register an user
+     *
+     * @param user
+     * @param result
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@ModelAttribute @Valid User user, BindingResult result, Model model) {
-        if(result.hasErrors()) return "dialogs/registerFailed";
+    public Model register(
+            @ModelAttribute @Valid User user,
+            BindingResult result,
+            Model model) {
+
+        if(result.hasErrors()){
+            model.addAttribute("success",false);
+            return model;
+        }
 
         User theUser = userServices.getByName(user.getName());
-        if (theUser != null) return "dialogs/registerFailed";
+        if (theUser != null){
+            model.addAttribute("success",false);
+            return model;
+        }
 
-        theUser = userServices.save(user);
-        model.addAttribute("reg_username", theUser.getName());
-        return "dialogs/registerSuccess";
+        userServices.save(user);
+        model.addAttribute("success",true);
+        return model;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
-        return "login";
-    }
-
+    /**
+     *
+     * Login
+     *
+     * @param userForm
+     * @param result
+     * @param model
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Model login(@ModelAttribute @Valid User userForm, BindingResult result, Model model, HttpSession session) {
 
@@ -84,7 +104,15 @@ public class UserController {
         return model;
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    /**
+     *
+     * Logout
+     *
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public Model logout(Model model,HttpSession session) {
         session.removeAttribute("session_user");
         model.addAttribute("result",true);

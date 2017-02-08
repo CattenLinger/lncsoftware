@@ -1,5 +1,6 @@
 package cn.lncsa.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "commits")
+@JsonIgnoreProperties({"user","replyTo"})
 public class Commit implements IBaseModel<Integer> {
 
     private Integer id;

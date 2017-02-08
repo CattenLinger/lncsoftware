@@ -2,13 +2,11 @@ package cn.lncsa.controller;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.ArticleBody;
-import cn.lncsa.data.model.Commit;
 import cn.lncsa.data.model.Topic;
 import cn.lncsa.services.ArticleServices;
 import cn.lncsa.services.CommitServices;
 import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
-import cn.lncsa.view.ArticleCommitDTO;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class ArticleController {
     }
 
     @Autowired
-    private void setUserServices(UserServices userServices){
+    private void setUserServices(UserServices userServices) {
         this.userServices = userServices;
     }
 
@@ -51,7 +50,7 @@ public class ArticleController {
     }
 
     @Autowired
-    private void setCommitServices(CommitServices commitServices){
+    private void setCommitServices(CommitServices commitServices) {
         this.commitServices = commitServices;
     }
 
@@ -61,75 +60,168 @@ public class ArticleController {
     *
     * */
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String articles(@RequestParam(value = "page",defaultValue = "0") int page, Model model){
-        model.addAttribute("articles",articleServices.get(new PageRequest(page,5, Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED));
-        model.addAttribute("topics",topicServices.mostWeightTopics(10));
-        return "articles";
+    /**
+     * Get public articles
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping(value = "/public", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Page<Article> get(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+
+        return articleServices.get(
+                new PageRequest(
+                        page,
+                        pageSize,
+                        Sort.Direction.DESC,
+                        "createDate"),
+                Article.STATUS_PUBLISHED);
     }
 
-    @RequestMapping(value = "/public/all",method = RequestMethod.GET)
-    public @ResponseBody Page<Article> publicArticles(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "pageSize",defaultValue = "10") int pageSize
-    ){
-        return articleServices.get(new PageRequest(page,pageSize,Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED);
-    }
-
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public String article(
+    /**
+     * Get one article
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public Model get(
             @PathVariable("id") Integer id,
-            @RequestParam(value = "commit_page",defaultValue = "0") int commitPage,
             Model model) {
         Article article = articleServices.get(id);
-        if(article == null || article.getId() == null) return "dialogs/articleNotFound";
+        if (article == null || article.getId() == null) return null;
 
-        model.addAttribute("article",article);
-        model.addAttribute("author",article.getAuthor().getName());
-        model.addAttribute("modifiedDate",article.getBody().getLatestModifiedDate());
-        model.addAttribute("content",article.getBody().getContent());
+        model.addAttribute("article", article);
+        model.addAttribute("author", article.getAuthor().getName());
+        model.addAttribute("modifiedDate", article.getBody().getLatestModifiedDate());
+        model.addAttribute("content", article.getBody().getContent());
 
-        Page<Commit> commits = commitServices.getCommitList(id,new PageRequest(commitPage,10, Sort.Direction.DESC,"date"));
-        model.addAttribute("commitPage",commits);
-        model.addAttribute("commitList", ArticleCommitDTO.convert(commits.getContent()));
-
-        return "article";
+        return model;
     }
 
-    @RequestMapping(value = "/topic/{topicId}",method = RequestMethod.GET)
-    public String topic(@PathVariable("topicId") int topicId,@RequestParam(value = "page",defaultValue = "0") int page ,Model model){
+    /**
+     * Get articles by topic
+     *
+     * @param topicId
+     * @param page
+     * @param pageCount
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/topic/{topicId}", method = RequestMethod.GET)
+    public Model getByTopic(
+            @PathVariable("topicId") int topicId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageCount", defaultValue = "10") int pageCount,
+            Model model) {
+        if (pageCount > 30) pageCount = 30;
         Topic topic = topicServices.get(topicId);
-        model.addAttribute("articles",articleServices.getByTopic(topic,new PageRequest(page,5, Sort.Direction.DESC, "createDate"),Article.STATUS_PUBLISHED));
-        model.addAttribute("topics",topicServices.mostWeightTopics(10));
-        model.addAttribute("current_topic",topic.getTitle());
-        return "articles";
+        if (topic == null) return null;
+        model.addAttribute("articles", articleServices.getByTopic(topic, new PageRequest(page, pageCount, Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED));
+        return model;
     }
 
-    @RequestMapping(value = "/write",method = RequestMethod.GET)
-    public String write(Model model){
-        model.addAttribute("topic_list",topicServices.getAll(new PageRequest(0,10, Sort.Direction.DESC,"createDate")).getContent());
-        return "writeArticle";
-    }
-
-    @RequestMapping(value = "/write",method = RequestMethod.POST)
-    public String write(@ModelAttribute Article article, @RequestParam("topic_list") List<Integer> topicIds, @RequestParam("article_body") String body, Model model, HttpSession session){
+    /**
+     * Create an article
+     *
+     * @param article
+     * @param topicIds
+     * @param body
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public Model create(
+            @ModelAttribute Article article,
+            @RequestParam("topic_list") List<Integer> topicIds,
+            @RequestParam("article_body") String body,
+            Model model,
+            HttpSession session) {
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-        if(sessionUserBean == null) return "redirect:/user/login";
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
 
         article.setAuthor(userServices.get(sessionUserBean.getUserId()));
 
-        articleServices.save(article,new ArticleBody(body));
-
-        if(topicIds != null && topicIds.size() > 0){
-            Set<Topic> topicSet = new HashSet<>();
-            topicSet.addAll(topicServices.get(topicIds));
-            article.setTopics(topicSet);
-            articleServices.saveHead(article);
+        if (topicIds != null && topicIds.size() > 0) {
+            article.setTopics(new HashSet<>(topicServices.get(topicIds)));
         }
 
-        model.addAttribute("article_title",article.getTitle());
+        articleServices.save(article, new ArticleBody(body));
 
-        return "dialogs/articlePosted";
+        model.addAttribute("success", true);
+
+        return model;
+    }
+
+
+    /**
+     *
+     * Update an article
+     *
+     * @param article
+     * @param topicIds
+     * @param body
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "",method = RequestMethod.PUT)
+    public Model update(
+            @ModelAttribute Article article,
+            @RequestParam("topic_list") List<Integer> topicIds,
+            @RequestParam("article_body") String body,
+            Model model,
+            HttpSession session) {
+        SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
+
+        Article origin = articleServices.get(article.getId());
+        if(origin == null || !sessionUserBean.getUserId().equals(origin.getAuthor().getId())){
+            model.addAttribute("success",false);
+            return model;
+        }
+
+        origin.getBody().setContent(body);
+        origin.getBody().setLatestModifiedDate(new Date());
+
+        if (topicIds != null && topicIds.size() > 0) {
+            origin.setTopics(new HashSet<>(topicServices.get(topicIds)));
+        }else {
+            origin.setTopics(null);
+        }
+
+        articleServices.save(origin);
+
+        model.addAttribute("success",true);
+
+        return model;
+    }
+
+    /**
+     * Delete an article
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public Model delete(@PathVariable("id") int id, Model model) {
+        articleServices.delete(id);
+        model.addAttribute("success", true);
+        return model;
     }
 
 }

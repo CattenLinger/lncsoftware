@@ -4,12 +4,12 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
                             http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
                             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
-                            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd">
+                            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     <!-- IOC container package scanning setting-->
     <context:component-scan base-package="cn.lncsa">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
@@ -52,5 +52,34 @@
     <bean id="markDownRender" class="org.pegdown.PegDownProcessor"/>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- Shiro -->
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--<property name="realm" ref=""/>-->
+    </bean>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/user/login"/>
+        <property name="successUrl" value="/user/current"/>
+        <property name="unauthorizedUrl" value="/"/>
+        <property name="filters">
+            <util:map>
+                <entry key="authc">
+                    <bean class="org.apache.shiro.web.filter.authc.PassThruAuthenticationFilter"/>
+                </entry>
+            </util:map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /*/** = authc
+                /manage/* = role[admin]
+                /* = anon
+            </value>
+        </property>
+    </bean>
 
 </beans>

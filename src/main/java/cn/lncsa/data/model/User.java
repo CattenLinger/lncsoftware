@@ -1,6 +1,7 @@
 package cn.lncsa.data.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -14,6 +15,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"profile","password"})
 public class User implements IBaseModel<Integer> {
 
     private Integer id;

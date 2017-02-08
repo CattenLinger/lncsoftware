@@ -36,4 +36,8 @@ public abstract class BaseServices<M extends IBaseModel<Integer>> {
     public Page<M> findAll(Specification<M> specification, Pageable pageable){
         return repository.findAll(specification,pageable);
     }
+
+    public Page<M> findAll(Pageable pageable){
+        return repository.findAll(pageable);
+    }
 }

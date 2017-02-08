@@ -10,13 +10,11 @@ import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -42,13 +40,12 @@ public class UserController {
     }
 
     @Autowired
-    private void setTopicServices(TopicServices topicServices){
+    private void setTopicServices(TopicServices topicServices) {
         this.topicServices = topicServices;
     }
 
 
     /**
-     *
      * Register an user
      *
      * @param user
@@ -62,24 +59,23 @@ public class UserController {
             BindingResult result,
             Model model) {
 
-        if(result.hasErrors()){
-            model.addAttribute("success",false);
+        if (result.hasErrors()) {
+            model.addAttribute("success", false);
             return model;
         }
 
         User theUser = userServices.getByName(user.getName());
-        if (theUser != null){
-            model.addAttribute("success",false);
+        if (theUser != null) {
+            model.addAttribute("success", false);
             return model;
         }
 
         userServices.save(user);
-        model.addAttribute("success",true);
+        model.addAttribute("success", true);
         return model;
     }
 
     /**
-     *
      * Login
      *
      * @param userForm
@@ -94,18 +90,17 @@ public class UserController {
         User user = userServices.getByName(userForm.getName());
 
         if (result.hasErrors() || user == null || !user.getPassword().equals(userForm.getPassword())) {
-            model.addAttribute("result",false);
+            model.addAttribute("result", false);
             return model;
         }
 
-        model.addAttribute("result",true);
-        session.setAttribute("session_user",new SessionUserBean(user));
+        model.addAttribute("result", true);
+        session.setAttribute("session_user", new SessionUserBean(user));
 
         return model;
     }
 
     /**
-     *
      * Logout
      *
      * @param model
@@ -113,62 +108,144 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public Model logout(Model model,HttpSession session) {
+    public Model logout(Model model, HttpSession session) {
         session.removeAttribute("session_user");
-        model.addAttribute("result",true);
+        model.addAttribute("result", true);
         return model;
     }
 
-    @RequestMapping("/self")
-    public String userCenter(Model model,HttpSession session){
+    /**
+     * User's homepage data, load them all at same time
+     *
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping("/self/dashboard")
+    public Model dashboard(Model model, HttpSession session) {
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-        if(sessionUserBean == null) return "redirect:/user/login";
-
-        User user = userServices.get(sessionUserBean.getUserId());
-        model.addAttribute("user_model",user);
-        model.addAttribute("user_info",userServices.getProfile(user,true));
-        model.addAttribute("user_latest_articles",articleServices.getByUser(user,new PageRequest(0,5, Sort.Direction.DESC, "createDate")).getContent());
-        model.addAttribute("user_article_count",articleServices.userArticleCount(user,
-                Article.STATUS_PUBLISHED,Article.STATUS_AUDITING,Article.STATUS_BANNED,Article.STATUS_SUBMITTED,Article.STATUS_PRIVATE));
-        return "userCenter";
-    }
-
-    @RequestMapping(value = "/profile",method = RequestMethod.GET)
-    public String userProfile(@RequestParam(value = "action", defaultValue = "show") String action, HttpSession session){
-        switch (action){
-            case "create": {
-                SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-                if(sessionUserBean == null) return "redirect:/user/login";
-
-                User user = userServices.get(sessionUserBean.getUserId());
-                if(user.getProfile() != null) return "dialogs/createUserProfileFailed";
-
-                userServices.saveProfile(sessionUserBean.getUserId(),new UserProfile());
-
-                return "dialogs/createUserProfileSuccess";
-            }
-
-            case "show":
-            default:
-                return "redirect:/user/self/profile";
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
         }
-    }
-
-    @RequestMapping(value = "/self/profile",method = RequestMethod.GET)
-    public String selfProfile(Model model, HttpSession session){
-        SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-        if(sessionUserBean == null) return "redirect:/user/login";
 
         User user = userServices.get(sessionUserBean.getUserId());
-        model.addAttribute("user_model",user);
-        model.addAttribute("user_info",user.getProfile());
-        return "userSelfProfile";
+
+        model.addAttribute("user_model", user);
+        model.addAttribute("user_info", userServices.getProfile(user, true));
+
+        model.addAttribute("user_latest_articles", articleServices.getByUser(user, new PageRequest(
+                0,
+                5,
+                Sort.Direction.DESC,
+                "createDate")).getContent());
+
+        model.addAttribute("user_article_count", articleServices.userArticleCount(user,
+                Article.STATUS_PUBLISHED,
+                Article.STATUS_AUDITING,
+                Article.STATUS_BANNED,
+                Article.STATUS_SUBMITTED,
+                Article.STATUS_PRIVATE));
+
+        model.addAttribute("user_topic_count", topicServices.getUserTopicCount(user));
+
+        model.addAttribute("user_topic", topicServices.getUserCreatedTopic(user, new PageRequest(
+                0,
+                5,
+                Sort.Direction.DESC,
+                "weight")));
+
+        return model;
     }
 
-    @RequestMapping(value = "/self/profile", method = RequestMethod.POST)
-    public String updateProfile(@ModelAttribute UserProfile userProfile, Model model, HttpSession session){
+    /**
+     * Get user self profile
+     *
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/self/profile", method = RequestMethod.GET)
+    public Model getSelfProfile(Model model, HttpSession session) {
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-        if(sessionUserBean == null) return "redirect:/user/login";
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
+
+        User user = userServices.get(sessionUserBean.getUserId());
+        model.addAttribute("success", true);
+        model.addAttribute("user", user);
+        model.addAttribute("data", user.getProfile());
+
+        return model;
+    }
+
+    /**
+     * Get user profile
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/{id}/profile", method = RequestMethod.GET)
+    public Model getProfile(@PathVariable("id") int id, Model model) {
+        User user = userServices.get(id);
+        if (user == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
+
+        model.addAttribute("success", true);
+        UserProfile userProfile = user.getProfile();
+        if (userProfile != null && userProfile.getSecret()) userProfile = null;
+        model.addAttribute("user", user);
+        model.addAttribute("data", userProfile);
+        return model;
+    }
+
+    /**
+     * Create user profile
+     *
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/self/profile", method = RequestMethod.POST)
+    public Model createProfile(Model model, HttpSession session) {
+        SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
+
+        User user = userServices.get(sessionUserBean.getUserId());
+        if (user.getProfile() != null) {
+            model.addAttribute("success", false);
+            return model;
+        }
+
+        userServices.saveProfile(sessionUserBean.getUserId(), new UserProfile());
+        model.addAttribute("success", true);
+
+        return model;
+    }
+
+    /**
+     * Update user self profile
+     *
+     * @param userProfile
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/self/profile", method = RequestMethod.PUT)
+    public Model updateSelfProfile(@ModelAttribute UserProfile userProfile, Model model, HttpSession session) {
+        SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
 
         User user = userServices.get(sessionUserBean.getUserId());
         UserProfile originProfile = user.getProfile();
@@ -177,19 +254,36 @@ public class UserController {
         originProfile.setHeadPic(userProfile.getHeadPic());
 
         userServices.saveProfile(originProfile);
-        session.setAttribute("session_user",new SessionUserBean(user));
 
-        return "dialogs/updateProfileSuccess";
+        model.addAttribute("success", true);
+
+        return model;
     }
 
-    @RequestMapping(value = "/self/profile/secret",method = RequestMethod.POST)
-    public String secretProfile(@RequestParam(value = "secret",defaultValue = "false") Boolean secret, HttpSession session){
+    /**
+     * Set user self profile secret
+     *
+     * @param secret
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = "/self/profile/secret", method = RequestMethod.PUT)
+    public Model secretSelfProfile(
+            @RequestParam(value = "secret", defaultValue = "false") Boolean secret,
+            Model model,
+            HttpSession session) {
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
-        if(sessionUserBean == null) return "redirect:/user/login";
+        if (sessionUserBean == null) {
+            model.addAttribute("success", false);
+            return model;
+        }
 
-        UserProfile userProfile = userServices.getProfile(sessionUserBean.getUserId(),true);
+        UserProfile userProfile = userServices.getProfile(sessionUserBean.getUserId(), true);
         userProfile.setSecret(secret);
         userServices.saveProfile(userProfile);
-        return "dialogs/updateProfileSuccess";
+
+        model.addAttribute("success", true);
+        return model;
     }
 }

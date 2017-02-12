@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,8 +16,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "article_head")
-@JsonIgnoreProperties({"author","body"})
-public class Article implements IBaseModel<Integer> {
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","author","body"})
+public class Article implements IBaseModel<Integer>{
 
     public static String STATUS_DRAFT = "draft";
     public static String STATUS_SUBMITTED = "submitted";

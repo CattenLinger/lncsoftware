@@ -18,6 +18,7 @@
     <mvc:resources mapping="/fonts/**" location="/fonts/"/>
     <mvc:resources mapping="/img/**" location="/img/"/>
 
+    <mvc:view-controller path="/" view-name="index"/>
 
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="order" value="1"/>

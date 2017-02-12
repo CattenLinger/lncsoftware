@@ -52,6 +52,7 @@
         - [Passing date to request param in Spring MVC](http://stackoverflow.com/questions/14766818/passing-date-to-request-param-in-spring-mvc)
         - [【原创】纯干货，Spring-data-jpa详解，全方位介绍](http://www.cnblogs.com/dreamroute/p/5173896.html)
         - [JPA select from collection with many-to-many association](http://stackoverflow.com/questions/15153877/jpa-select-from-collection-with-many-to-many-association)
+        - [No serializer found for class org.hibernate.proxy.pojo.javassist.Javassist?](http://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist)
     - 视图技术
         - [FreeMarker教程](http://relive123-yahoo-com-cn.iteye.com/blog/818013)
         - [FreeMarker 获取页面request、session](http://blog.csdn.net/feiyu8607/article/details/6557159)

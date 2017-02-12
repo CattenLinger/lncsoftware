@@ -73,13 +73,7 @@
                 </entry>
             </util:map>
         </property>
-        <property name="filterChainDefinitions">
-            <value>
-                /*/** = authc
-                /manage/* = role[admin]
-                /* = anon
-            </value>
-        </property>
+        <property name="filterChainDefinitions" value="/* = anon"/>
     </bean>
 
 </beans>

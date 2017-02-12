@@ -85,7 +85,7 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Model login(@ModelAttribute @Valid User userForm, BindingResult result, Model model, HttpSession session) {
+    public Model login(@Valid User userForm, BindingResult result, Model model, HttpSession session) {
 
         User user = userServices.getByName(userForm.getName());
 

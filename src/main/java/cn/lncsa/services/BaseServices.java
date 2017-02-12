@@ -18,7 +18,7 @@ public abstract class BaseServices<M extends IBaseModel<Integer>> {
     }
 
     public M get(Integer id){
-        return repository.getOne(id);
+        return repository.findOne(id);
     }
 
     public M save(M model){

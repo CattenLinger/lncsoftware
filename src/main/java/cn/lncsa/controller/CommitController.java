@@ -6,7 +6,7 @@ import cn.lncsa.data.model.User;
 import cn.lncsa.services.ArticleServices;
 import cn.lncsa.services.CommitServices;
 import cn.lncsa.services.UserServices;
-import cn.lncsa.view.ArticleCommitDTO;
+import cn.lncsa.view.CommitDTO;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -66,7 +66,7 @@ public class CommitController {
     {
         Page<Commit> commits = commitServices.getCommitList(articleId,new PageRequest(page,pageCount, Sort.Direction.DESC,"date"));
         model.addAttribute("commitPage",commits);
-        model.addAttribute("commitList", ArticleCommitDTO.convert(commits.getContent()));
+        model.addAttribute("commitList", CommitDTO.convert(commits.getContent()));
         return model;
     }
 

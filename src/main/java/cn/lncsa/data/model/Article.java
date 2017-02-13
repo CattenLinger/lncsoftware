@@ -50,8 +50,6 @@ public class Article implements IBaseModel<Integer>{
     * */
 
     @Column(nullable = false,length = 15)
-    @NotEmpty(message = "validate_article_status_empty")
-    @Pattern(regexp = "^(draft|submitted|published|private|delete|banned|auditing)$", message = "validate_article_status_not_in_set")
     public String getStatus() {
         return status;
     }
@@ -61,8 +59,6 @@ public class Article implements IBaseModel<Integer>{
     }
 
     @Column(nullable = false)
-    @Length(min = 1, max = 128, message = "validate_article_title_not_in_range")
-    @NotEmpty(message = "validate_article_title_empty")
     public String getTitle() {
         return title;
     }

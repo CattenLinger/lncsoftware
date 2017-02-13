@@ -1,12 +1,15 @@
 package cn.lncsa.controller;
 
+import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.Topic;
+import cn.lncsa.services.ArticleServices;
 import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +27,7 @@ public class TopicController {
 
     private TopicServices topicServices;
     private UserServices userServices;
+    private ArticleServices articleServices;
 
     @Autowired
     private void setTopicServices(TopicServices topicServices) {
@@ -33,6 +37,11 @@ public class TopicController {
     @Autowired
     private void setUserServices(UserServices userServices) {
         this.userServices = userServices;
+    }
+
+    @Autowired
+    public void setArticleServices(ArticleServices articleServices) {
+        this.articleServices = articleServices;
     }
 
     /**
@@ -121,6 +130,35 @@ public class TopicController {
         if(topic == null) return null;
         model.addAttribute("creator",topic.getCreator().getId());
         model.addAttribute("data",topic);
+        return model;
+    }
+
+    /**
+     * Get articles by topic
+     *
+     * @param topicId
+     * @param page
+     * @param pageCount
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/{topicId}/articles", method = RequestMethod.GET)
+    public Model articles(
+            @PathVariable("topicId") int topicId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pageCount", defaultValue = "10") int pageCount,
+            Model model) {
+        if (pageCount > 30) pageCount = 30;
+
+        Topic topic = topicServices.get(topicId);
+        if (topic == null) return model;
+
+        model.addAttribute("articles", articleServices.getByTopic(topic, new PageRequest(
+                page,
+                pageCount,
+                Sort.Direction.DESC,
+                "createDate"), Article.STATUS_PUBLISHED));
+
         return model;
     }
 

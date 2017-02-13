@@ -4,14 +4,13 @@ import cn.lncsa.data.model.Commit;
 import cn.lncsa.data.model.User;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by cattenlinger on 2017/1/16.
  */
-public class ArticleCommitDTO {
+public class CommitDTO {
     private Integer id = null;
 
     private String shownName = null;
@@ -23,10 +22,10 @@ public class ArticleCommitDTO {
     private Integer replyTo = null;
     private String replyToContent = null;
 
-    public ArticleCommitDTO() {
+    public CommitDTO() {
     }
 
-    public ArticleCommitDTO(Commit commit){
+    public CommitDTO(Commit commit){
         this.id = commit.getId();
 
         User user = commit.getUser();
@@ -46,8 +45,8 @@ public class ArticleCommitDTO {
         }
     }
 
-    public static List<ArticleCommitDTO> convert(List<Commit> commits){
-        return commits.parallelStream().map(ArticleCommitDTO::new).collect(Collectors.toList());
+    public static List<CommitDTO> convert(List<Commit> commits){
+        return commits.parallelStream().map(CommitDTO::new).collect(Collectors.toList());
     }
 
     public Integer getId() {

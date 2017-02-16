@@ -1,9 +1,12 @@
 package cn.lncsa.secure;
 
+import cn.lncsa.data.model.Permission;
+import cn.lncsa.data.model.Role;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.repository.IUserDAO;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,20 @@ public class DefaultRealm extends AuthorizingRealm{
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        
+        Integer userId = (Integer) principalCollection.fromRealm(getName()).iterator().next();
+        User user = userDAO.findOne(userId);
+        if(user != null){
+            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+            for (Role role : user.getRoles()){
+                if(role.getEnable()) {
+                    simpleAuthorizationInfo.addRole(role.getName());
+                    for (Permission permission : role.getPermissions()){
+                        if(permission.getEnable()) simpleAuthorizationInfo.addStringPermission(permission.getUri());
+                    }
+                }
+            }
+            return simpleAuthorizationInfo;
+        }
         return null;
     }
 

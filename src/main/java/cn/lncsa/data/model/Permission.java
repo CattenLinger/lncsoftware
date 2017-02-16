@@ -19,7 +19,6 @@ public class Permission implements IBaseModel<Integer> {
     private String title;
     private String uri;
     private Boolean enable;
-    private Boolean negative;
 
     public Integer getId() {
         return id;
@@ -55,14 +54,6 @@ public class Permission implements IBaseModel<Integer> {
         this.enable = enable;
     }
 
-    public Boolean getNegative() {
-        return negative;
-    }
-
-    public void setNegative(Boolean negative) {
-        this.negative = negative;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,16 +61,11 @@ public class Permission implements IBaseModel<Integer> {
 
         Permission that = (Permission) o;
 
-        if (title != null ? !title.equals(that.title) : that.title != null) return false;
-        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
-        return negative != null ? negative.equals(that.negative) : that.negative == null;
+        return uri.equals(that.uri);
     }
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
-        result = 31 * result + (negative != null ? negative.hashCode() : 0);
-        return result;
+        return uri.hashCode();
     }
 }

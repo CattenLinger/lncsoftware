@@ -21,6 +21,10 @@ public abstract class BaseServices<M extends IBaseModel<Integer>> {
         return repository.findOne(id);
     }
 
+    public M get(Specification<M> specification){
+        return repository.findOne(specification);
+    }
+
     public M save(M model){
         return repository.save(model);
     }

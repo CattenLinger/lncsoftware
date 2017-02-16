@@ -1,6 +1,10 @@
 package cn.lncsa.data.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -47,6 +51,8 @@ public class Role implements IBaseModel<Integer> {
         this.id = id;
     }
 
+    @NotEmpty(message = "validate_role_name_empty")
+    @Length(min = 3, max = 10, message = "validate_role_name_too_long")
     public String getName() {
         return name;
     }

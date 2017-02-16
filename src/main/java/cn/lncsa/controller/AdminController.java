@@ -4,6 +4,7 @@ import cn.lncsa.data.model.Permission;
 import cn.lncsa.data.model.Role;
 import cn.lncsa.services.PermissionServices;
 import cn.lncsa.services.RoleServices;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class AdminController {
         this.permissionServices = permissionServices;
     }
 
+    @RequiresRoles("admin")
     @RequestMapping(value = "/role",method = RequestMethod.GET)
     public Page<Role> getRole(
             @RequestParam(value = "page",defaultValue = "0") int page,

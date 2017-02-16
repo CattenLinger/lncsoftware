@@ -100,6 +100,12 @@ public class UserController {
         return model;
     }
 
+    @RequestMapping("/login")
+    public Model login(Model model){
+        model.addAttribute("message","you need login");
+        return model;
+    }
+
     /**
      * Logout
      *

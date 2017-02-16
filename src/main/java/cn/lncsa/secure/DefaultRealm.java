@@ -25,6 +25,10 @@ public class DefaultRealm extends AuthorizingRealm{
         this.userDAO = userDAO;
     }
 
+    public DefaultRealm(){
+        setName("DefaultRealm");
+    }
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         Integer userId = (Integer) principalCollection.fromRealm(getName()).iterator().next();

@@ -2,9 +2,7 @@ package cn.lncsa.view;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.ArticleBody;
-import cn.lncsa.data.model.Topic;
 import cn.lncsa.data.model.User;
-import cn.lncsa.services.TopicServices;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -12,7 +10,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,31 +29,9 @@ public class ArticleDTO {
     private Date createDate;
     private Date modifiedDate;
     private String content;
-    private Set<Topic> topics;
+    private Set<String> topics;
 
     public ArticleDTO() {
-
-    }
-
-    public ArticleDTO(String title, String subtitle, User author, String status, String content, Date createDate, Date modifiedDate, Set<Topic> topics) {
-        this.title = title;
-        this.subtitle = subtitle;
-        this.status = status;
-        this.createDate = createDate;
-        this.modifiedDate = modifiedDate;
-        this.author = author;
-        this.topics = topics;
-        this.content = content;
-    }
-
-    public ArticleDTO(String title, String subtitle, String status, String content, Date createDate, Date modifiedDate, User author) {
-        this.title = title;
-        this.subtitle = subtitle;
-        this.status = status;
-        this.content = content;
-        this.createDate = createDate;
-        this.modifiedDate = modifiedDate;
-        this.author = author;
 
     }
 
@@ -71,7 +46,6 @@ public class ArticleDTO {
             this.content = article.getBody().getContent();
         } else this.modifiedDate = createDate;
         this.author = article.getAuthor();
-        this.topics = article.getTopics();
     }
 
     /*
@@ -79,21 +53,6 @@ public class ArticleDTO {
     * Logic
     *
     * */
-
-    @JsonIgnore
-    public void setTopics(List<Integer> topicIds, TopicServices topicServices) {
-        this.topics = new HashSet<>(topicServices.get(topicIds));
-    }
-
-    @JsonIgnore
-    public List<Integer> getTopicIds() {
-        return topics.stream().map(Topic::getId).collect(Collectors.toList());
-    }
-
-    @JsonIgnore
-    public List<String> getTopicTitles() {
-        return topics.stream().map(Topic::getTitle).collect(Collectors.toList());
-    }
 
     public String getAuthorName() {
         if (this.author != null) {
@@ -104,12 +63,12 @@ public class ArticleDTO {
 
     @JsonIgnore
     public Article merge(Article origin) {
+        if(this.article != origin) this.article = origin;
         origin.setTitle(title);
         origin.setSubtitle(subtitle);
-        //origin.setCreateDate(createDate);
-        origin.setTopics(topics);
         origin.setStatus(status);
-        origin.setAuthor(author);
+        origin.setAuthor(author == null ? origin.getAuthor() : author);
+        origin.setTopics(topics);
         if (origin.getBody() == null && this.content != null) {
             ArticleBody articleBody = new ArticleBody(content);
             articleBody.setLatestModifiedDate(modifiedDate);
@@ -119,6 +78,10 @@ public class ArticleDTO {
             article.getBody().setLatestModifiedDate(modifiedDate);
         }
         return origin;
+    }
+
+    public Article merge(){
+        return merge(article);
     }
 
     public Article parse() {
@@ -204,11 +167,11 @@ public class ArticleDTO {
         this.author = author;
     }
 
-    public Set<Topic> getTopics() {
+    public Set<String> getTopics() {
         return topics;
     }
 
-    public void setTopics(Set<Topic> topics) {
+    public void setTopics(Set<String> topics) {
         this.topics = topics;
     }
 

@@ -2,11 +2,9 @@ package cn.lncsa.services;
 
 import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.ArticleBody;
-import cn.lncsa.data.model.Topic;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.repository.IArticleBodyDAO;
 import cn.lncsa.data.repository.IArticleDAO;
-import cn.lncsa.data.repository.IBaseDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

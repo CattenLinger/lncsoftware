@@ -47,6 +47,7 @@
     - [AngularJS ui-router (nested routes)](https://www.codeproject.com/articles/842880/angularjs-ui-router-nested-routes)
 - 后端
     - Spring Data 与 Hibernate 相关
+        - [Spring 4 MVC REST Controller Example (JSON CRUD Tutorial)](http://viralpatel.net/blogs/spring-4-mvc-rest-example-json/)
         - [Spring验证的错误返回------BindingResult](http://zyjustin9.iteye.com/blog/2002606)
         - [Hibernate Validation各注解的用法](http://tcrct.iteye.com/blog/1329823)
         - [Passing date to request param in Spring MVC](http://stackoverflow.com/questions/14766818/passing-date-to-request-param-in-spring-mvc)

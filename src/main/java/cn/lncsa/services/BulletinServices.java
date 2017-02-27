@@ -7,9 +7,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,7 +56,17 @@ public class BulletinServices extends BaseServices<Bulletin>{
                         "createDate")).getContent();
     }
 
-    public List<String> getAllTags() {
+    public List<Object[]> getAllTags() {
         return bulletinDAO.getAllTags();
+    }
+
+    public Bulletin getLatestAvailable(String type){
+        Iterator<Bulletin> result = findAll((root, query, cb) ->
+                cb.and(cb.equal(root.get("type"),type),
+                        cb.greaterThanOrEqualTo(root.get("periodOfValidity"),
+                                new Date())),
+                new PageRequest(0,1, Sort.Direction.DESC,"periodOfValidity")).getContent().iterator();
+
+        return result.hasNext() ? result.next() : null;
     }
 }

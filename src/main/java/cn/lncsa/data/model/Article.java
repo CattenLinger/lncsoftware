@@ -1,13 +1,8 @@
 package cn.lncsa.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
@@ -16,8 +11,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "article_head")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler","author","body"})
-public class Article implements IBaseModel<Integer>{
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "author", "body"})
+public class Article implements IBaseModel<Integer> {
 
     public static String STATUS_DRAFT = "draft";
     public static String STATUS_SUBMITTED = "submitted";
@@ -27,29 +22,24 @@ public class Article implements IBaseModel<Integer>{
     public static String STATUS_BANNED = "banned";
     public static String STATUS_AUDITING = "auditing";
 
-    public Article(){
-        this.status = STATUS_DRAFT;
-        this.createDate = new Date();
-    }
-
     private Integer id;
-
     private String title;
     private String subtitle;
     private String status;
-
     private Date createDate;
-
     private User author;
-
     private ArticleBody body;
-    private Set<Topic> topics;
+    private Set<String> topics;
+    public Article() {
+        this.status = STATUS_DRAFT;
+        this.createDate = new Date();
+    }
 
     /*
     *  Getter and setter
     * */
 
-    @Column(nullable = false,length = 15)
+    @Column(nullable = false, length = 15)
     public String getStatus() {
         return status;
     }
@@ -114,12 +104,12 @@ public class Article implements IBaseModel<Integer>{
         this.body = contentId;
     }
 
-    @ManyToMany
-    public Set<Topic> getTopics() {
+    @ElementCollection
+    public Set<String> getTopics() {
         return topics;
     }
 
-    public void setTopics(Set<Topic> topics) {
+    public void setTopics(Set<String> topics) {
         this.topics = topics;
     }
 }

@@ -1,34 +1,32 @@
 package cn.lncsa.controller;
 
 import cn.lncsa.data.model.Article;
-import cn.lncsa.data.model.Topic;
 import cn.lncsa.services.ArticleServices;
-import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
 import cn.lncsa.view.ArticleDTO;
 import cn.lncsa.view.SessionUserBean;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by catten on 12/31/16.
  */
-@Controller
+@RestController
 @RequestMapping("/article")
 public class ArticleController {
 
     private ArticleServices articleServices;
     private UserServices userServices;
-    private TopicServices topicServices;
 
     @Autowired
     private void setArticleServices(ArticleServices articleServices) {
@@ -38,11 +36,6 @@ public class ArticleController {
     @Autowired
     private void setUserServices(UserServices userServices) {
         this.userServices = userServices;
-    }
-
-    @Autowired
-    private void setTopicServices(TopicServices topicServices) {
-        this.topicServices = topicServices;
     }
 
     /*
@@ -58,20 +51,12 @@ public class ArticleController {
      * @param pageSize
      * @return
      */
-    @RequestMapping(value = "/public", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    Page<Article> get(
+    @GetMapping("/public")
+    public Page<Article> get(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-
         return articleServices.get(
-                new PageRequest(
-                        page,
-                        pageSize,
-                        Sort.Direction.DESC,
-                        "createDate"),
-                Article.STATUS_PUBLISHED);
+                new PageRequest(page, pageSize, Sort.Direction.DESC, "createDate"), Article.STATUS_PUBLISHED);
     }
 
     /**
@@ -81,7 +66,7 @@ public class ArticleController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public Model get(
             @PathVariable("id") Integer id,
             Model model) {
@@ -103,17 +88,12 @@ public class ArticleController {
     /**
      * Create an article
      *
-     * @param topicIds
      * @param model
      * @param session
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public Model create(
-            ArticleDTO articleDTO,
-            @RequestParam(value = "topic_list", required = false) List<Integer> topicIds,
-            Model model,
-            HttpSession session) {
+    @PostMapping
+    public Model create(ArticleDTO articleDTO, Model model, HttpSession session) {
         SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
         if (sessionUserBean == null) {
             model.addAttribute("success", false);
@@ -128,10 +108,7 @@ public class ArticleController {
         articleDTO.setAuthor(userServices.get(sessionUserBean.getUserId()));
         articleDTO.setModifiedDate(new Date());
         articleDTO.setCreateDate(new Date());
-
-        if (topicIds != null && topicIds.size() > 0) {
-            articleDTO.setTopics(topicIds, topicServices);
-        }
+        articleDTO.setTopics(articleDTO.getTopics());
 
         Article article = articleDTO.parse();
 
@@ -146,15 +123,14 @@ public class ArticleController {
     /**
      * Update an article
      *
-     * @param topicIds
      * @param model
      * @param session
      * @return
      */
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     public Model update(
-            @ModelAttribute ArticleDTO articleDTO,
-            @RequestParam(value = "topic_list", required = false) List<Integer> topicIds,
+            @RequestBody ArticleDTO articleDTO,
+            BindingResult bindingResult,
             Model model,
             HttpSession session) {
 
@@ -164,7 +140,7 @@ public class ArticleController {
             return model;
         }
 
-        if (articleDTO.getStatus().matches("auditing||banned")) {
+        if (articleDTO.getStatus().matches("auditing||banned") || bindingResult.hasErrors()) {
             model.addAttribute("success", false);
             return model;
         }
@@ -177,7 +153,7 @@ public class ArticleController {
             return model;
         }
 
-        articleDTO.setTopics(topicIds, topicServices);
+        articleDTO.setArticle(origin);
         articleDTO.setModifiedDate(new Date());
 
         articleServices.save(articleDTO.merge(origin));
@@ -195,9 +171,9 @@ public class ArticleController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/status", method = RequestMethod.POST)
+    @PatchMapping("/{id}/status")
     public Model updateStatus(
-            @RequestParam("id") int id,
+            @PathVariable("id") int id,
             @RequestParam("status") String status,
             Model model) {
         if (status.matches("^(draft|submitted|published|private|delete|banned|auditing)$")) {
@@ -218,7 +194,7 @@ public class ArticleController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public Model delete(@PathVariable("id") int id, Model model) {
         articleServices.delete(id);
         model.addAttribute("success", true);

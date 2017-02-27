@@ -4,7 +4,6 @@ import cn.lncsa.data.model.Article;
 import cn.lncsa.data.model.User;
 import cn.lncsa.data.model.UserProfile;
 import cn.lncsa.services.ArticleServices;
-import cn.lncsa.services.TopicServices;
 import cn.lncsa.services.UserServices;
 import cn.lncsa.view.SessionUserBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class UserController {
 
     private UserServices userServices;
     private ArticleServices articleServices;
-    private TopicServices topicServices;
 
     @Autowired
     private void setUserServices(UserServices userServices) {
@@ -38,12 +36,6 @@ public class UserController {
     private void setArticleServices(ArticleServices articleServices) {
         this.articleServices = articleServices;
     }
-
-    @Autowired
-    private void setTopicServices(TopicServices topicServices) {
-        this.topicServices = topicServices;
-    }
-
 
     /**
      * Register an user
@@ -101,8 +93,14 @@ public class UserController {
     }
 
     @RequestMapping("/login")
-    public Model login(Model model){
-        model.addAttribute("message","you need login");
+    public Model login(Model model, HttpSession session){
+        SessionUserBean sessionUserBean = (SessionUserBean) session.getAttribute("session_user");
+        if(sessionUserBean == null){
+            model.addAttribute("wasLogin", false);
+            return model;
+        }
+        model.addAttribute("wasLogin",true);
+        model.addAttribute("userInfo",sessionUserBean);
         return model;
     }
 
@@ -152,14 +150,6 @@ public class UserController {
                 Article.STATUS_BANNED,
                 Article.STATUS_SUBMITTED,
                 Article.STATUS_PRIVATE));
-
-        model.addAttribute("user_topic_count", topicServices.getUserTopicCount(user));
-
-        model.addAttribute("user_topic", topicServices.getUserCreatedTopic(user, new PageRequest(
-                0,
-                5,
-                Sort.Direction.DESC,
-                "weight")));
 
         return model;
     }

@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <uib-tabset active="0" justified="true" type="pills">
+            <uib-tab index="0" heading="登陆">
+                <div class="container-fluid marginTopFix">
+                    <form ng-controller="LoginController">
+                        <div class="form-group">
+                            <label for="f-username">用户名</label>
+                            <input ng-binding="loginForm.username" type="text" id="f-username" name="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="f-password">密码</label>
+                            <input ng-binding="loginForm.password" type="password" id="f-password" name="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button ng-click="login()" type="button" class="btn btn-primary btn-block">登陆</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </uib-tab>
+            <uib-tab index="1" heading="注册">
+                <div class="container-fluid marginTopFix">
+                    <form>
+                        <div class="form-group">
+                            <label for="rf-username">用户名</label>
+                            <input type="text" id="rf-username" name="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rf-password">密码</label>
+                            <input type="password" id="rf-password" name="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rf-confpassword">再次确认密码</label>
+                            <input type="password" id="rf-confpassword" name="confPassword" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rf-validateCode">验证码</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="rf-validateCode" name="validateCode">
+                                <span class="input-group-addon">123456</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-md-offset-3">
+                                <button type="button" class="btn btn-primary btn-block">注册</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

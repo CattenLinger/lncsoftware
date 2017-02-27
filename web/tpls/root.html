@@ -1,0 +1,42 @@
+<nav class="navbar navbar-default navbar-fixed-top" ng-controller="IndexNavController">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#index-navbar-collapse" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref=".home" href="#/index/home"><img src="imgs/logo_32x.png" align="left"> 软件园协会 </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="index-navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li ui-sref-active="active"><a ui-sref=".home" href="#/index/home">主页</a></li>
+                <li ui-sref-active="active"><a ui-sref=".article" href="#/index/article">社区</a></li>
+                <li ui-sref-active="active"><a ui-sref=".bulletins" href="#/index/bulletins">活动</a></li>
+                <li ui-sref-active="active"><a ui-sref=".aboutUs" href="#/index/aboutUs">关于我们</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-hide="loginInfo.hasLogin">
+                <li ui-sref-active="active"><a ui-sref=".login" href="#/index/login">登陆／注册</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-show="loginInfo.hasLogin">
+                <li><a href="#">你好，<span ng-bind="loginInfo.user.nickname"></span></a></li>
+                <li><a href="#/index/home" ng-click="logout()">登出</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header hidden-xs slideInRight animated">
+                <h1>岭南软件园协会
+                    <small>at 广东岭南职业技术学院</small>
+                </h1>
+            </div>
+            <ui-view></ui-view>
+        </div>
+    </div>
+</div>

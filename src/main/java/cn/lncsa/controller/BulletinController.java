@@ -11,13 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by cattenlinger on 2017/1/1.
@@ -68,9 +65,9 @@ public class BulletinController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/tags",method = RequestMethod.GET)
+    @GetMapping("/tags")
     public Model tags(Model model){
-        model.addAttribute("tags",bulletinServices.getAllTags());
+        model.addAttribute("data",bulletinServices.getAllTags());
         return model;
     }
 
@@ -84,6 +81,11 @@ public class BulletinController {
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public Bulletin get(@PathVariable("id") int id){
         return bulletinServices.get(id);
+    }
+
+    @GetMapping("/{type}/latest")
+    public Bulletin getLatestOne(@PathVariable("type") String type){
+        return bulletinServices.getLatestAvailable(type);
     }
 
     /**

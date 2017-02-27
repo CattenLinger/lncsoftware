@@ -20,6 +20,6 @@ public interface IBulletinDAO extends IBaseDAO<Bulletin> {
     @Query("select b from Bulletin b where b.type = ?1 order by b.createDate")
     Page<Bulletin> getByType(String type, Pageable pageable);
 
-    @Query("select distinct b.type from Bulletin b")
-    List<String> getAllTags();
+    @Query("select distinct b.type, b.shownName from Bulletin b")
+    List<Object[]> getAllTags();
 }

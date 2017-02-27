@@ -1,6 +1,7 @@
 package cn.lncsa.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,8 +20,7 @@ public class Bulletin implements IBaseModel<Integer> {
 
     private String type;
     private String content;
-    private String imageLink;
-    private String link;
+    private String shownName;
 
     private Date createDate;
     private Date periodOfValidity;
@@ -32,14 +32,6 @@ public class Bulletin implements IBaseModel<Integer> {
     *
     * */
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
     @Column(length = 15)
     @NotEmpty(message = "validate_bulletin_type_empty")
     public String getType() {
@@ -50,6 +42,8 @@ public class Bulletin implements IBaseModel<Integer> {
         this.type = type;
     }
 
+    @Lob
+    @JsonRawValue
     @NotEmpty(message = "validate_bulletin_content_empty")
     public String getContent() {
         return content;
@@ -66,14 +60,6 @@ public class Bulletin implements IBaseModel<Integer> {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
     }
 
     @Id
@@ -104,5 +90,13 @@ public class Bulletin implements IBaseModel<Integer> {
 
     public void setPeriodOfValidity(Date periodOfValidity) {
         this.periodOfValidity = periodOfValidity;
+    }
+
+    public String getShownName() {
+        return shownName;
+    }
+
+    public void setShownName(String shownName) {
+        this.shownName = shownName;
     }
 }

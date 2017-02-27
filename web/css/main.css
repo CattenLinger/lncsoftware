@@ -1,0 +1,40 @@
+*{
+    margin : 0;
+    padding : 0;
+    /*color: #F2F2F2*/
+}
+
+body{
+    margin-top: 60px;
+    padding-top : 21px;
+    /*background-color: #2F2F2F;*/
+}
+
+ul{ list-style-type:none; }
+
+.hide{ display : none; }
+.show{ display : block;}
+
+.marginTopFix{
+    margin-top: 5pt;
+}
+
+.lnc-navbar{
+    margin: 3px 5px 0 5px;
+}
+
+.lnc-opBulletin{
+    text-align: center;
+    background: url("/imgs/bg1.jpg") no-repeat center;
+    background-size: auto;
+}
+.lnc-opBulletin>*{
+    text-align: center;
+    color: #F2F2F2;
+}
+
+a.navbar-brand>img{
+    height: 20px;
+    width: 20px;
+    margin: 0 5px;
+}

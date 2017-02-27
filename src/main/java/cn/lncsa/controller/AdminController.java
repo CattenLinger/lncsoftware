@@ -11,17 +11,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * Created by catten on 1/11/17.
  */
-@Controller
+@RestController
+@RequiresRoles("admin")
 @RequestMapping("/management")
 public class AdminController {
 
@@ -38,15 +36,37 @@ public class AdminController {
         this.permissionServices = permissionServices;
     }
 
-    @RequiresRoles("admin")
-    @RequestMapping(value = "/role",method = RequestMethod.GET)
+    /*
+    *
+    * Controller Method
+    *
+    * */
+
+    /**
+     *
+     * Get all roles
+     *
+     * @param page
+     * @param pageCount
+     * @return
+     */
+    @GetMapping("/role/all")
     public Page<Role> getRole(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "pageCount", defaultValue = "10") int pageCount){
         return roleServices.findAll(new PageRequest(page,pageCount));
     }
 
-    @RequestMapping(value = "/role",method = RequestMethod.POST)
+    /**
+     *
+     * Create a role
+     *
+     * @param role
+     * @param bindingResult
+     * @param model
+     * @return
+     */
+    @PostMapping("/role")
     public Model createRole(
             Role role,
             BindingResult bindingResult,
@@ -62,7 +82,17 @@ public class AdminController {
         return model;
     }
 
-    @RequestMapping(value = "/role/{id}",method = RequestMethod.POST)
+    /**
+     *
+     * Update a role information
+     *
+     * @param role
+     * @param bindingResult
+     * @param id
+     * @param model
+     * @return
+     */
+    @PostMapping("/role/{id}")
     public Model updateRole(
             Role role,
             BindingResult bindingResult,
@@ -85,14 +115,31 @@ public class AdminController {
         return model;
     }
 
-    @RequestMapping(value = "/role/{id}",method = RequestMethod.DELETE)
+    /**
+     *
+     * Delete a role
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @DeleteMapping("/role/{id}")
     public Model deleteRole(@PathVariable("id") int id, Model model){
         roleServices.delete(id);
         model.addAttribute("success",true);
         return model;
     }
 
-    @RequestMapping(value = "/role/{id}/permission",method = RequestMethod.POST)
+    /**
+     *
+     * Grant role permissions
+     *
+     * @param id
+     * @param permissionIds
+     * @param model
+     * @return
+     */
+    @PatchMapping("/role/{id}/permission")
     public Model grantPermissions(
             @PathVariable("id") int id,
             @RequestParam(value = "perIds") List<Integer> permissionIds,
@@ -110,7 +157,15 @@ public class AdminController {
         return model;
     }
 
-    @RequestMapping(value = "/permission",method = RequestMethod.GET)
+    /**
+     *
+     * List all available permissions
+     *
+     * @param page
+     * @param pageCount
+     * @return
+     */
+    @GetMapping("/permission")
     public Page<Permission> getPermissions(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "pageCount",defaultValue = "10") int pageCount){
